@@ -74,8 +74,10 @@ let make = (_children) => {
     };
 
     let updateChar = (event) => {
-      let value = ReactDOMRe.domElementToObj(
-        ReactEventRe.Form.target(event),
+      let value = (
+        event
+        |> ReactEventRe.Form.target
+        |> ReactDOMRe.domElementToObj
       )##value;
  
       send(UpdateValue(value));
