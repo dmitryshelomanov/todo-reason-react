@@ -7,15 +7,10 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var UniqId$ReactTemplate = require("./utils/UniqId.bs.js");
+var TodoItem$ReactTemplate = require("./TodoItem.bs.js");
 
 var component = ReasonReact.reducerComponent("root");
-
-var id = /* record */[/* contents */0];
-
-function uniqId() {
-  id[0] = id[0] + 1 | 0;
-  return id[0];
-}
 
 function make() {
   return /* record */[
@@ -33,26 +28,27 @@ function make() {
               var state = param[/* state */1];
               var len = String(List.length(state[/* todos */1]));
               var renderTodo = function (todo) {
-                var match = todo[/* isChecked */1];
-                return React.createElement("li", {
-                            key: String(todo[/* id */0]),
-                            className: match ? "list-group-item disabled" : "list-group-item",
-                            onClick: (function () {
-                                return Curry._1(send, /* ToggleTodo */Block.__(1, [todo[/* id */0]]));
-                              })
-                          }, todo[/* title */2], React.createElement("input", {
-                                checked: todo[/* isChecked */1],
-                                type: "checkbox"
-                              }));
+                return ReasonReact.element(String(todo[/* id */0]), undefined, TodoItem$ReactTemplate.make(todo, (function (id) {
+                                  return Curry._1(send, /* ToggleTodo */Block.__(1, [id]));
+                                }), (function (id) {
+                                  return Curry._1(send, /* RemoveTodo */Block.__(2, [id]));
+                                }), /* array */[]));
               };
-              var todosItem = $$Array.of_list(List.map(renderTodo, state[/* todos */1]));
+              var todosItem = $$Array.of_list(List.map(renderTodo, List.sort((function (prev, next) {
+                              var match = !next[/* isChecked */1] && prev[/* isChecked */1];
+                              if (match) {
+                                return 1;
+                              } else {
+                                return 0;
+                              }
+                            }), state[/* todos */1])));
               var addNewTodo = function ($$event) {
                 $$event.preventDefault();
                 return Curry._1(send, /* AddTodo */Block.__(0, [state[/* todo */0]]));
               };
               var updateChar = function ($$event) {
                 var value = $$event.target.value;
-                return Curry._1(send, /* UpdateValue */Block.__(2, [value]));
+                return Curry._1(send, /* UpdateValue */Block.__(3, [value]));
               };
               return React.createElement("div", undefined, React.createElement("nav", {
                               className: "navbar navbar-dark bg-dark"
@@ -89,7 +85,7 @@ function make() {
                                 /* todo */"",
                                 /* todos : :: */[
                                   /* record */[
-                                    /* id */uniqId(/* () */0),
+                                    /* id */UniqId$ReactTemplate.getUniqId(/* () */0),
                                     /* isChecked */false,
                                     /* title */action[0]
                                   ],
@@ -115,6 +111,15 @@ function make() {
                                 /* todos */todos
                               ]]);
                 case 2 : 
+                    var id$1 = action[0];
+                    var todos$1 = List.filter((function (todo) {
+                              return todo[/* id */0] !== id$1;
+                            }))(state[/* todos */1]);
+                    return /* Update */Block.__(0, [/* record */[
+                                /* todo */state[/* todo */0],
+                                /* todos */todos$1
+                              ]]);
+                case 3 : 
                     return /* Update */Block.__(0, [/* record */[
                                 /* todo */action[0],
                                 /* todos */state[/* todos */1]
@@ -128,7 +133,5 @@ function make() {
 }
 
 exports.component = component;
-exports.id = id;
-exports.uniqId = uniqId;
 exports.make = make;
 /* component Not a pure module */

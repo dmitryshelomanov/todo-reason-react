@@ -1,8 +1,4 @@
-type item = {
-  id: int,
-  isChecked: bool,
-  title: string,
-};
+open TodoModel;
 
 type state = {
   todo: string,
@@ -12,17 +8,10 @@ type state = {
 type action =
   | AddTodo(string)
   | ToggleTodo(int)
+  | RemoveTodo(int)
   | UpdateValue(string);
 
 let component = ReasonReact.reducerComponent("root");
-
-let id = ref(0);
-
-let uniqId = () => {
-  id := id^ + 1;
-
-  id^
-};
 
 let make = (_children) => {
   ...component,
@@ -31,13 +20,21 @@ let make = (_children) => {
     switch (action) {
     | AddTodo(todo) => ReasonReact.Update({
         todo: "",
-        todos: [{ id: uniqId(), title: todo, isChecked: false }, ... state.todos],
+        todos: [{ id: UniqId.getUniqId(), title: todo, isChecked: false }, ... state.todos],
       })
     | UpdateValue(char) => ReasonReact.Update({ ...state, todo: char })
     | ToggleTodo(id) => {
         let todos = List.map(
-          (todo) =>
+          (todo: item) =>
             todo.id === id ? { ...todo, isChecked: !todo.isChecked } : todo,
+          state.todos
+        );
+
+        ReasonReact.Update({ ...state, todos })
+      }
+    | RemoveTodo(id) => {
+        let todos = List.filter(
+          (todo: item) => todo.id !== id,
           state.todos
         );
 
@@ -46,27 +43,21 @@ let make = (_children) => {
     },
   render: ({ state, send }) => {
     let len = string_of_int(List.length(state.todos));
-    let renderTodo = (todo) => (
-      <li
-        key={string_of_int(todo.id)}
-        className=(
-          todo.isChecked
-            ? "list-group-item disabled"
-            : "list-group-item"
-        )
-        onClick=((_event) => send(ToggleTodo(todo.id)))
-      >
-        {ReasonReact.string(todo.title)}
-        <input
-          _type="checkbox"
-          checked=(todo.isChecked)
-        />
-      </li>
+    let renderTodo = (todo: item) => (
+      <TodoItem
+        key=(string_of_int(todo.id))
+        todo
+        onToggle=(id => send(ToggleTodo(id)))
+        onRemove=(id => send(RemoveTodo(id)))
+      />
     );
     let todosItem = state.todos
+      |> List.sort((prev: item, next: item) => {
+        !next.isChecked && prev.isChecked ? 1 : 0
+      })
       |> List.map(renderTodo)
       |> Array.of_list
-      |> ReasonReact.arrayToElement;
+      |> ReasonReact.array;
 
     let addNewTodo = (event) => {
       ReactEventRe.Synthetic.preventDefault(event);
