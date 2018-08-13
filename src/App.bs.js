@@ -4,8 +4,8 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
-var Todo$ReactTemplate = require("./Pages/Todo.bs.js");
-var Login$ReactTemplate = require("./Pages/Login.bs.js");
+var Todo$ReactTemplate = require("./pages/Todo.bs.js");
+var Login$ReactTemplate = require("./pages/Login.bs.js");
 var Router$ReactTemplate = require("./Router.bs.js");
 
 var component = ReasonReact.reducerComponent("App");
