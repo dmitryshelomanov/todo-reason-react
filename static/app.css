@@ -1,0 +1,31 @@
+.login_page {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.login_page form {
+  margin-top: 20px;
+  width: 320px;
+}
+
+li {
+  display: flex !important;
+  cursor: pointer;
+  justify-content: space-between
+}
+h2 {
+  margin: 20px 0
+}
+p {
+  display: flex;
+  align-items: center;
+}
+input[type=checkbox] {
+  margin-right: 15px;
+}
+.form-control {
+  margin-bottom: 15px;
+}

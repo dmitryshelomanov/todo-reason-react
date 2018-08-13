@@ -9,6 +9,5 @@ function getUniqId() {
   return id[0];
 }
 
-exports.id = id;
 exports.getUniqId = getUniqId;
 /* No side effect */

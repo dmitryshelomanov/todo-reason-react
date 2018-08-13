@@ -1,0 +1,1 @@
+let getUniqId: unit => int;
