@@ -23,6 +23,6 @@
   "devDependencies": {
     "bs-platform": "^4.0.3",
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.10"
+    "webpack-cli": "^5.0.1"
   }
 }
